@@ -22,9 +22,10 @@ pkgs.mkShellNoCC {
     export PODMAN_CONFIG_DIR="$PWD/.config/podman"
     export CONTAINERS_CONF="$PODMAN_CONFIG_DIR/containers.conf"
     export CONTAINERS_STORAGE_CONF="$PODMAN_CONFIG_DIR/storage.conf"
-    # Overwrite the current policy with a symlink to the project's (podman has no env variable for the policy config)
-    sudo mkdir -p /etc/containers \
-    && sudo ln "$PODMAN_CONFIG_DIR/policy.json" /etc/containers/policy.json
+    # Add symlinks to the project's config (podman has no env variable for them)
+    sudo mkdir -p ~/.config/containers
+    sudo ln "$PODMAN_CONFIG_DIR/policy.json" ~/.config/containers/policy.json
+    sudo ln "$PODMAN_CONFIG_DIR/registries.conf" ~/.config/containers/registries.conf
 
     echo -e "
       [storage]
