@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  jenkins:
+    build:
+      .
+    ports:
+        - 8080:8080
+    env_file:
+      - .env
+    volumes:
+      - ./my_marvin.yml:/var/jenkins_home/jenkins.yaml
+      - ./job_dsl.groovy:/job_dsl.groovy
