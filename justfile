@@ -10,3 +10,6 @@ up:
 down:
     podman stop hylozoa-engine-jenkins_jenkins_1
     podman rm hylozoa-engine-jenkins_jenkins_1
+
+logs:
+    podman logs hylozoa-engine-jenkins_jenkins_1
