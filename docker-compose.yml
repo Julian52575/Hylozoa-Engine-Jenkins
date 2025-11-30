@@ -8,5 +8,10 @@ services:
     env_file:
       - .env
     volumes:
-      - ./jenkins.yaml:/var/jenkins_home/jenkins.yaml
+      - ./jenkins_home:/var/jenkins_home
+      - ./jenkins.yaml:/config/jenkins.yaml
       - ./job_dsl.groovy:/job_dsl.groovy
+      - ./${DOCS_FOLDER}:/${DOCS_FOLDER}
+    environment:
+      - CASC_JENKINS_CONFIG=/config/jenkins.yaml
+      - DOCS_FOLDER=${DOCS_FOLDER}

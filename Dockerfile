@@ -4,7 +4,16 @@ FROM jenkins/jenkins:latest
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 
 USER root
-RUN apt-get update && apt-get install -y lsb-release && apt-get install -y make && apt-get install -y gcc
+RUN apt-get update && apt-get install -y lsb-release \
+  xz-utils ca-certificates sudo lsb-release
+
+#Installing Nix package manager
+RUN mkdir -p /nix && chown root:root /nix
+RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
+  --extra-conf "sandbox = false" \
+  --init none \
+  --no-confirm
+RUN . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix --version
 
 #Adding the Jenkins automate installation Key to system
 RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
