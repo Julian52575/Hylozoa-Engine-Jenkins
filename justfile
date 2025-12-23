@@ -36,8 +36,8 @@ clean-volumes: down
 DOC_EXPOSER_NAME := "doc_exposer"
 DOC_EXPOSER_PROCESS_FILE := "${PROCESS_FOLDER}/${DOC_EXPOSER_NAME}.pid"
 DOC_EXPOSER_LOGS := "${LOGS_FOLDER}/${DOC_EXPOSER_NAME}.log"
-doc-exposer-run:
-    if [ -f {{DOC_EXPOSER_PROCESS_FILE}} ]; then just doc-exposer-stop; fi
+doc-exposer-up:
+    if [ -f {{DOC_EXPOSER_PROCESS_FILE}} ]; then just doc-exposer-down; fi
     inotifywait ".${HOST_DOCS_FOLDER}" -e CREATE -e MOVED_TO --format '%f' -m | while read line; do \
         TARGET_FOLDER="${HTTP_EXPOSE_FOLDER}/$line"; \
         echo "[$line] Update detected on .${HOST_DOCS_FOLDER}/$line" >> {{DOC_EXPOSER_LOGS}}; \
@@ -48,7 +48,7 @@ doc-exposer-run:
     echo "Monitoring .${HOST_DOCS_FOLDER} using PID $PID" > {{DOC_EXPOSER_LOGS}}; \
     echo $PID > {{DOC_EXPOSER_PROCESS_FILE}}
 
-doc-exposer-stop:
+doc-exposer-down:
     if [ -f {{DOC_EXPOSER_PROCESS_FILE}} ]; then \
         PID=$(cat {{DOC_EXPOSER_PROCESS_FILE}}); \
         kill $PID; \
