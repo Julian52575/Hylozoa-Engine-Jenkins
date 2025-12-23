@@ -1,3 +1,5 @@
 .env
 jenkins_home
 docs_archive
+.process
+.logs

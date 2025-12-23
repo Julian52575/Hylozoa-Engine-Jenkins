@@ -6,6 +6,7 @@ pkgs.mkShellNoCC {
   packages = with pkgs; [
     just
     lolcat
+    inotify-tools
     podman
     podman-compose
     # podman dependencies
@@ -14,6 +15,17 @@ pkgs.mkShellNoCC {
 
   # On shell startup
   shellHook = ''
+    # Load environment variables from .env file
+    set -a
+    source .env
+    set +a
+  
+    # Add environement variables specific to the shell
+    export HTTP_EXPOSE_FOLDER=/tmp #/var/www/doxygen/
+    export PROCESS_FOLDER=.process #Folder to monitor for process pids
+    export LOGS_FOLDER=.logs #Folder to store logs from processes
+    mdkir -p $PROCESS_FOLDER $LOGS_FOLDER
+
     echo "Welcome to the Hylozoa-Engine-Jenkins environment.
       Install the host dependencies for podmap: sudo apt-get install uidmap
       " | lolcat

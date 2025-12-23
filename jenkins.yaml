@@ -30,5 +30,16 @@ jenkins:
                 - "Job/Cancel"
               entries:
               - user: "dev"
+  unclassified:
+  globalNodeProperties:
+    - envVars:
+        env:
+          - key: GIT_SSH_KNOWN_HOSTS
+            value: "/var/jenkins_home/.ssh/known_hosts"
+tool:
+  git:
+    installations:
+      - name: "Default"
+        home: "git"
 jobs:
   - file: ./job_dsl.groovy

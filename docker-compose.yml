@@ -11,7 +11,15 @@ services:
       - ./jenkins_home:/var/jenkins_home
       - ./jenkins.yaml:/config/jenkins.yaml
       - ./job_dsl.groovy:/job_dsl.groovy
-      - ./${DOCS_FOLDER}:/${DOCS_FOLDER}
+      - .${HOST_DOCS_FOLDER}:${HOST_DOCS_FOLDER}
     environment:
       - CASC_JENKINS_CONFIG=/config/jenkins.yaml
       - DOCS_FOLDER=${DOCS_FOLDER}
+    command: > # Hask for setting up SSH known hosts for GitHub
+      bash -c "
+        mkdir -p /var/jenkins_home/.ssh &&
+        ssh-keyscan github.com >> /var/jenkins_home/.ssh/known_hosts &&
+        chown -R jenkins:jenkins /var/jenkins_home/.ssh &&
+        chown -R jenkins:jenkins ${HOST_DOCS_FOLDER} &&
+        /usr/bin/tini -s -- /usr/local/bin/jenkins.sh
+      "

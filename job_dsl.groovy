@@ -4,54 +4,51 @@ folder("/Tools") {
 
 freeStyleJob('/Tools/doxygen-listen-branch') {
     parameters {
-        stringParam('GIT_REPOSITORY_URL',
-                    'git@github.com:Julian52575/Hylozoa-Engine-Engine.git',
-                    'Git URL of the repository to clone. IE: git@github.com:Julian52575/Hylozoa-Engine-Engine.git')
+        stringParam('GITHUB_NAME',
+                    'Julian52575/Hylozoa-Engine-Engine',
+                    'GitHub repository owner/repo_name (e.g.: "EpitechIT31000/chocolatine")')
         stringParam('GIT_BRANCH',
                     'dev',
                     'Git branch / tag of the repository to listen to')
-        credentialsParam('SSH_KEY') {
-                description('SSH Key used to clone the repository') 
-                required(true)
-        }
     }
 
     wrappers {
         preBuildCleanup()
+    }
+    scm {
+        git {
+            remote {
+                url('https://github.com/${GITHUB_NAME}.git')
+            }
+            branch('$GIT_BRANCH')
+            extensions {
+                submoduleOptions {
+                    recursive(true)
+                }
+            }
+        }
     }
 
     steps {
         shell('''
             set -e
 
-			eval "$(ssh-agent -s)"
-			echo "$SSH_KEY" > a.ssh
-            chmod 600 a.ssh
-			ssh-add a.ssh
-			rm a.ssh
-
-            REPO_NAME=$(basename "$GIT_REPOSITORY_URL" .git)
-            echo "[INFO] Cloning $REPO_NAME from $GIT_REPOSITORY_URL"
-            git clone "$GIT_REPOSITORY_URL"
-            cd "$REPO_NAME"
-
-            echo "[INFO] Checking out branch: $GIT_BRANCH"
-            git checkout "$GIT_BRANCH"
-
+            ls common
             echo "[INFO] Entering nix-shell and building docs"
+            nix-shell --run "just common-update"
             nix-shell --run "just doxygen"
 
             echo "[INFO] Packaging documentation"
             mkdir -p build-doc-tmp
             # Adjust path if your doxygen output differs
-            cp -r docs/html/* build-doc-tmp/
+            cp -r doxygen/html/* build-doc-tmp/
 
-            ARCHIVE=\"${GIT_BRANCH}.tar.gz\"
+            ARCHIVE=\"${GIT_BRANCH}\"
             tar -czf "$ARCHIVE" -C build-doc-tmp .
 
             echo "[INFO] Sending archive to incoming directory"
-            # /srv/docs_incoming must be host-mounted into the Jenkins container
-            cp "$ARCHIVE" /srv/docs_incoming/
+            # $HOST_DOCS_FOLDER must be host-mounted into the Jenkins container
+            mv "$ARCHIVE" "$HOST_DOCS_FOLDER/"
 
             echo "[INFO] Done."
         ''')

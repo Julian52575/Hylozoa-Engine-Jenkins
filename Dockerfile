@@ -13,7 +13,9 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
   --extra-conf "sandbox = false" \
   --init none \
   --no-confirm
-RUN . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix --version
+RUN . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix --version && nix-shell --version
+ENV PATH=/nix/var/nix/profiles/default/bin:$PATH
+RUN chown -R jenkins:jenkins /nix
 
 #Adding the Jenkins automate installation Key to system
 RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
