@@ -33,27 +33,27 @@ clean-volumes: down
     podman volume prune -f
     sudo rm -rf ./${HOST_DOCS_FOLDER} ./jenkins_home
 
-DOC_EXPOSER_NAME := "doc_exposer"
-DOC_EXPOSER_PROCESS_FILE := "${PROCESS_FOLDER}/${DOC_EXPOSER_NAME}.pid"
-DOC_EXPOSER_LOGS := "${LOGS_FOLDER}/${DOC_EXPOSER_NAME}.log"
-doc-exposer-up:
-    if [ -f {{DOC_EXPOSER_PROCESS_FILE}} ]; then just doc-exposer-down; fi
+DOC_EXTRACTER_NAME := "doc_extracter"
+DOC_EXTRACTER_PROCESS_FILE := "${PROCESS_FOLDER}/${DOC_EXTRACTER_NAME}.pid"
+DOC_EXTRACTER_LOGS := "${LOGS_FOLDER}/${DOC_EXTRACTER_NAME}.log"
+doc-extracter-up:
+    if [ -f {{DOC_EXTRACTER_PROCESS_FILE}} ]; then just doc-extracter-down; fi
     inotifywait ".${HOST_DOCS_FOLDER}" -e CREATE -e MOVED_TO --format '%f' -m | while read line; do \
         TARGET_FOLDER="${HTTP_EXPOSE_FOLDER}/$line"; \
-        echo "[$line] Update detected on .${HOST_DOCS_FOLDER}/$line" >> {{DOC_EXPOSER_LOGS}}; \
+        echo "[$line] Update detected on .${HOST_DOCS_FOLDER}/$line" >> {{DOC_EXTRACTER_LOGS}}; \
         mkdir -p "${TARGET_FOLDER}" && tar -xzf ".${HOST_DOCS_FOLDER}/$line" -C "${TARGET_FOLDER}"; \
-        echo "[$line] Extracted documentation at ${TARGET_FOLDER}" >> {{DOC_EXPOSER_LOGS}}; \
+        echo "[$line] Extracted documentation at ${TARGET_FOLDER}" >> {{DOC_EXTRACTER_LOGS}}; \
     done & \
     PID=$!; \
-    echo "Monitoring .${HOST_DOCS_FOLDER} using PID $PID" > {{DOC_EXPOSER_LOGS}}; \
-    echo $PID > {{DOC_EXPOSER_PROCESS_FILE}}
+    echo "Monitoring .${HOST_DOCS_FOLDER} using PID $PID" > {{DOC_EXTRACTER_LOGS}}; \
+    echo $PID > {{DOC_EXTRACTER_PROCESS_FILE}}
 
-doc-exposer-down:
-    if [ -f {{DOC_EXPOSER_PROCESS_FILE}} ]; then \
-        PID=$(cat {{DOC_EXPOSER_PROCESS_FILE}}); \
+doc-extracter-down:
+    if [ -f {{DOC_EXTRACTER_PROCESS_FILE}} ]; then \
+        PID=$(cat {{DOC_EXTRACTER_PROCESS_FILE}}); \
         kill $PID; \
-        rm {{DOC_EXPOSER_PROCESS_FILE}} {{DOC_EXPOSER_LOGS}} ; \
-        echo "Documentation exposer process ($PID) stopped."; \
+        rm {{DOC_EXTRACTER_PROCESS_FILE}} {{DOC_EXTRACTER_LOGS}} ; \
+        echo "Documentation extracter process ($PID) stopped."; \
     else \
-        echo "No documentation exposer process found."; \
+        echo "No documentation extracter process found."; \
     fi
