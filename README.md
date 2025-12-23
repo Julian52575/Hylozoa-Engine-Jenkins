@@ -5,10 +5,10 @@ The dev environement _(powered by nix-shell)_ allows the instance to easily be r
 
 ## Features
 
-| Name | Purpose | Just commands |
+| Name | Purpose | Just recipe |
 | ---- | ---- | ------------- |
 | Jenkins docker image | Run the Jenkins instance | `just up` and `just down` |
-| Doc exposer | Extract the compressed documentation into the http server folder | `just doc-exposer-up` and `just doc-exposer-down` |
+| Doc extracter | Extract the compressed documentation into the http server folder | `just doc-exposer-up` and `just doc-exposer-down` |
 
 ## Noteworthy files
 
@@ -16,6 +16,8 @@ The dev environement _(powered by nix-shell)_ allows the instance to easily be r
 | ---- | ---- |
 | jenkins.yaml | Configure the Jenkins instance |
 | job_dsl.groovy | Define Jenkins jobs |
+| .env | The environement variables **shared between the jenkins container AND the nix-shell**. By default, is a symlink to .env.example that should be overwritten in production |
+| .env.exemple | Lists the environment variables used and assigns them with dummy values |
 
 ## Noteworthy environement variables
 
