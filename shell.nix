@@ -84,9 +84,5 @@ pkgs.mkShellNoCC {
       echo "Adding $USER to $DOC_EXTRACTER_GROUP group"
       sudo usermod -a -G "$DOC_EXTRACTER_GROUP" "$USER"
     fi
-    if [ ! -f /etc/nginx/sites-enabled/doxygen ]; then
-      echo "Coping Nginx doxygen site configuration at /etc/nginx/sites-enabled/doxygen."
-      sudo cp --verbose .config/nginx/doxygen.conf /etc/nginx/sites-enabled/doxygen
-    fi
   '';
 }
