@@ -8,7 +8,7 @@ help:
     just --list
 
 up:
-    mkdir -p ./jenkins_home && podman unshare chown -R 1000:1000 jenkins_home && podman unshare chown -R 1000:1000 ".${HOST_DOCS_FOLDER}"
+    mkdir -p ./jenkins_home ".${HOST_DOCS_FOLDER}" && podman unshare chown -R 1000:1000 jenkins_home && podman unshare chown -R 1000:1000 ".${HOST_DOCS_FOLDER}"
     podman-compose up --build -d
 
 down:
