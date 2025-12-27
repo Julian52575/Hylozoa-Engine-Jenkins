@@ -8,7 +8,7 @@ The dev environement _(powered by nix-shell)_ allows the instance to easily be r
 | Name | Purpose | Just recipe |
 | ---- | ---- | ------------- |
 | Jenkins docker image | Run the Jenkins instance | `just up` and `just down` |
-| Doc extracter | Extract the compressed documentation into the http server folder | `just doc-exposer-up` and `just doc-exposer-down` |
+| Doc extracter | Extract the compressed documentation into the http server folder | `just doc-extracter-up` and `just doc-extracter-down` |
 
 ## Noteworthy files
 
