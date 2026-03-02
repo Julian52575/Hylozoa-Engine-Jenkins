@@ -13,6 +13,7 @@ jenkins:
        - id: webhook
          name: "webhook"
          password: ${USER_WEBHOOK_PASSWORD}
+
   authorizationStrategy:
     roleBased:
       roles:
@@ -26,9 +27,8 @@ jenkins:
             - name: "webhook"
               description: "Webhook user"
               permissions:
-                - "Overall/Read"
-                - "Job/Read"
-                - "Job/Build"
+                - "Overall/Read:github-trigger"
+                - "Job/Build:github-trigger"
               entries:
               - user: "webhook"
             - name: "dev"
@@ -54,3 +54,13 @@ tool:
         home: "git"
 jobs:
   - file: ./job_dsl.groovy
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - usernamePassword:
+            id: "webhook-creds"
+            username: "webhook"
+            password: "${USER_WEBHOOK_API_TOKEN}"
+            description: "API token for webhooks"

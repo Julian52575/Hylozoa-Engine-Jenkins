@@ -28,6 +28,8 @@ freeStyleJob('/Tools/doxygen-listen-branch') {
             }
         }
     }
+    // Token to trigger the job remotely, e.g., from a GitHub webhook.
+    authenticationToken(System.getenv("JOB_REMOTE_TOKEN"))
 
     steps {
         shell('''
