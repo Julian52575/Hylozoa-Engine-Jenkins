@@ -35,10 +35,8 @@ freeStyleJob('/doxygen-expose') {
         shell('''
             set -e
 
-            ls common
             echo "[INFO] Entering nix-shell and building docs"
-            nix-shell --run "just common-update"
-            nix-shell --run "just doxygen"
+            nix-shell -p doxygen graphviz just --run "just common-update && just doxygen"
 
             echo "[INFO] Packaging documentation"
             mkdir -p build-doc-tmp
