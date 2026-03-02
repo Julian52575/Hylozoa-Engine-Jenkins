@@ -29,7 +29,7 @@ jenkins:
               permissions:
                 - "Overall/Read"
                 - "Job/Build"
-
+                - "Job/Read"
               entries:
               - user: "webhook"
             - name: "dev"
