@@ -27,8 +27,9 @@ jenkins:
             - name: "webhook"
               description: "Webhook user"
               permissions:
-                - "Overall/Read:github-trigger"
-                - "Job/Build:github-trigger"
+                - "Overall/Read"
+                - "Job/Build"
+
               entries:
               - user: "webhook"
             - name: "dev"
