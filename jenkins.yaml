@@ -10,6 +10,9 @@ jenkins:
        - id: dev
          name: "dev"
          password: ${USER_DEV_PASSWORD}
+       - id: webhook
+         name: "webhook"
+         password: ${USER_WEBHOOK_PASSWORD}
   authorizationStrategy:
     roleBased:
       roles:
@@ -20,6 +23,14 @@ jenkins:
                 - "Overall/Administer"
               entries:
               - user: "admin"
+            - name: "webhook"
+              description: "Webhook user"
+              permissions:
+                - "Overall/Read"
+                - "Job/Read"
+                - "Job/Build"
+              entries:
+              - user: "webhook"
             - name: "dev"
               description: "HE Developers"
               permissions:
