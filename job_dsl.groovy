@@ -2,7 +2,7 @@ folder("/Tools") {
     description("Folder for miscellaneous tools.")
 }
 
-freeStyleJob('/Tools/doxygen-listen-branch') {
+freeStyleJob('/doxygen-expose') {
     parameters {
         stringParam('GITHUB_NAME',
                     'Julian52575/Hylozoa-Engine-Engine',
