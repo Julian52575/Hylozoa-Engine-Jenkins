@@ -55,13 +55,3 @@ tool:
         home: "git"
 jobs:
   - file: ./job_dsl.groovy
-
-credentials:
-  system:
-    domainCredentials:
-      - credentials:
-        - usernamePassword:
-            id: "webhook-creds"
-            username: "webhook"
-            password: "${USER_WEBHOOK_API_TOKEN}"
-            description: "API token for webhooks"
