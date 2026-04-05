@@ -13,10 +13,14 @@ pkgs.mkShellNoCC {
     fuse-overlayfs
   ];
 
-  HTTP_EXPOSE_FOLDER = "/var/www/html/doxygen/";
   PROCESS_FOLDER = ".process"; #Folder to monitor for process pids
   LOGS_FOLDER = ".logs"; #Folder to store logs from processes
+
+  HTTP_EXPOSE_FOLDER = "/var/www/html/doxygen/";
   DOC_EXTRACTER_GROUP = "hej_doc_extractor"; #Group allowed to access ${HTTP_EXPOSE_FOLDER}
+  BM_EXPOSE_FOLDER = "/var/www/html/benchmarks/";
+  BM_EXTRACTER_GROUP = "hej_benchmark_exposer"; #Group allowed to access ${BM_EXPOSE_FOLDER}
+
 
   # On shell startup
   shellHook = ''
@@ -27,7 +31,7 @@ pkgs.mkShellNoCC {
   
     # Add environement variables specific to the shell
 
-    mkdir -p $PROCESS_FOLDER $LOGS_FOLDER
+    mkdir -p $PROCESS_FOLDER $LOGS_FOLDER $BM_EXPOSE_FOLDER
 
     echo "Welcome to the Hylozoa-Engine-Jenkins environment.
       Install the host dependencies for podmap: sudo apt-get install uidmap
@@ -83,6 +87,25 @@ pkgs.mkShellNoCC {
     if [ ! -w "$HTTP_EXPOSE_FOLDER" ]; then
       echo "Adding $USER to $DOC_EXTRACTER_GROUP group"
       sudo usermod -a -G "$DOC_EXTRACTER_GROUP" "$USER"
+    fi
+
+    echo "Running checks for access to \$BM_EXPOSE_FOLDER $BM_EXPOSE_FOLDER..." | lolcat
+    if [ ! -d "$BM_EXPOSE_FOLDER" ]; then
+      echo "Creating benchmark expose folder at $BM_EXPOSE_FOLDER"
+      sudo mkdir --verbose -p $BM_EXPOSE_FOLDER;
+    fi
+    # Check for group access to BM_EXPOSE_FOLDER
+    if ! getent group "$BM_EXTRACTER_GROUP" > /dev/null; then
+      echo "Creating group $BM_EXTRACTER_GROUP"
+      sudo groupadd "$BM_EXTRACTER_GROUP"
+    fi
+    if [ -z "$(stat -c %G "$BM_EXPOSE_FOLDER" | grep "$BM_EXTRACTER_GROUP")" ]; then
+      echo "Changing group ownership of $BM_EXPOSE_FOLDER to $USER:$BM_EXTRACTER_GROUP"
+      sudo chown --verbose $USER:"$BM_EXTRACTER_GROUP" "$BM_EXPOSE_FOLDER"
+    fi
+    if [ ! -w "$BM_EXPOSE_FOLDER" ]; then
+      echo "Adding $USER to $BM_EXTRACTER_GROUP group"
+      sudo usermod -a -G "$BM_EXTRACTER_GROUP" "$USER"
     fi
   '';
 }
