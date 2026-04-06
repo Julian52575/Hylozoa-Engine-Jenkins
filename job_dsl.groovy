@@ -137,7 +137,7 @@ pkgs.mkShellNoCC {
   '';
 }
 NIXEOF
-
+    COMMIT=$(git rev-parse HEAD);
     nix-shell "$NIX_EXPR" \
         --run "bash -c '
             mkdir -p buildRelease --verbose;
@@ -146,11 +146,11 @@ NIXEOF
                 -DSDL_ALSA=OFF;
             cmake --build buildRelease --config Release --parallel 8;
             cp ./buildRelease/benchmarks/benchmarkSuite .;
-            ./benchmarkSuite --benchmark_out="benchmarkresults_{{COMMIT}}_{{BRANCH}}.json" \
+            ./benchmarkSuite --benchmark_out="benchmarkresults_${COMMIT}_${GIT_BRANCH}.json" \
                 --benchmark_out_format=json \
                 --benchmark_repetitions=10 \
                 --benchmark_report_aggregates_only=true;
-            mv benchmarkresults*.json "$HOST_BENCHMARKS_FOLDER/" --verbose;
+            mv benchmarkresults*.json "$HOST_BMS_FOLDER/" --verbose;
         '"
         ''') // shell
     }
