@@ -89,7 +89,11 @@ pkgs.mkShellNoCC {
     echo "Running checks for access to \$HOST_BMS_FOLDER $HOST_BMS_FOLDER..." | lolcat
     if [ ! -d "$HOST_BMS_FOLDER" ]; then
       echo "Creating benchmark expose folder at $HOST_BMS_FOLDER"
-      sudo mkdir --verbose -p $HOST_BMS_FOLDER;
+      mkdir --verbose -p $HOST_BMS_FOLDER;
+    fi
+    chmod 777 $HOST_BMS_FOLDER --verbose
+    if [ $? -ne 0 ]; then
+      echo "Failed to set permissions for $HOST_BMS_FOLDER, please check the folder permissions and make sure $USER has write access to it"
     fi
   '';
 }
