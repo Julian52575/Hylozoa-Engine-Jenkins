@@ -4,3 +4,4 @@ docs_archive
 .process
 .logs
 benchmarks_results/
+tests/token.txt
