@@ -4,8 +4,8 @@
     benchmark_file="benchmarkresults_1234_dummy.json"
 
     #Clean
-    rm -rf "$BM_EXPOSE_FOLDER""$benchmark_file" --verbose || true #Remove if already present from a previous test
     sudo rm -rf ".$HOST_BMS_FOLDER/$benchmark_file" --verbose || true
+    sudo rm -rf "$BM_EXPOSE_FOLDER/$benchmark_file" --verbose || true
 
     # Copy
     sudo cp -r "tests/benchmark-exposer/$benchmark_file" ".$HOST_BMS_FOLDER" --verbose
@@ -16,5 +16,6 @@
     [ -f "$BM_EXPOSE_FOLDER/$benchmark_file" ]
 
     # Clean
-    rm -rf "$BM_EXPOSE_FOLDER/$benchmark_file" --verbose 
+    sudo rm -rf ".$HOST_BMS_FOLDER/$benchmark_file" --verbose || true
+    sudo rm -rf "$BM_EXPOSE_FOLDER/$benchmark_file" --verbose || true
 }

@@ -37,8 +37,8 @@ clean-volumes: down
     sudo rm -rf ./${HOST_DOCS_FOLDER} ./jenkins_home
 
 testProcesses: # Run bats tests
-    [ -d ".${HOST_DOCS_FOLDER}" ]
-    [ -d ".${HOST_BMS_FOLDER}" ]
+    [ -d ".${HOST_DOCS_FOLDER}" ] || mkdir ".${HOST_DOCS_FOLDER}"
+    [ -d ".${HOST_BMS_FOLDER}" ] || mkdir ".${HOST_BMS_FOLDER}"
     just runProcesses
     bats tests/doc-extracter/ tests/benchmark-exposer/
 
