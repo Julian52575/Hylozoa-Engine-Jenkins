@@ -6,6 +6,8 @@ pkgs.mkShellNoCC {
   packages = with pkgs; [
     just
     lolcat
+    jq
+    bats
     inotify-tools
     podman
     podman-compose
