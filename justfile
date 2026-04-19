@@ -36,6 +36,9 @@ clean-volumes: down
     podman volume prune -f
     sudo rm -rf ./${HOST_DOCS_FOLDER} ./jenkins_home
 
+processesTest: # Run bats tests
+    just runProcesses
+    bats tests/doc-extracter/ tests/benchmark-exposer/
 
 # DOCS EXTRACTER
 DOC_EXTRACTER_NAME := "doc_extracter"

@@ -7,6 +7,7 @@ pkgs.mkShellNoCC {
     just
     lolcat
     jq
+    bats
     inotify-tools
     podman
     podman-compose
