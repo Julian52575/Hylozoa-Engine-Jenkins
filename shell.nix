@@ -20,6 +20,9 @@ pkgs.mkShellNoCC {
 
   HTTP_EXPOSE_FOLDER = "/var/www/html/doxygen/";
   DOC_EXTRACTER_GROUP = "hej_doc_extractor"; #Group allowed to access ${HTTP_EXPOSE_FOLDER}
+  BM_EXPOSE_FOLDER = "/var/benchmarksResults/";
+  BM_EXTRACTER_GROUP = "hej_benchmark_exposer"; #Group allowed to access ${BM_EXPOSE_FOLDER}
+
 
   # On shell startup
   shellHook = ''
@@ -88,14 +91,23 @@ pkgs.mkShellNoCC {
       sudo usermod -a -G "$DOC_EXTRACTER_GROUP" "$USER"
     fi
 
-    echo "Running checks for access to \$HOST_BMS_FOLDER $HOST_BMS_FOLDER..." | lolcat
-    if [ ! -d "$HOST_BMS_FOLDER" ]; then
-      echo "Creating benchmark expose folder at $HOST_BMS_FOLDER"
-      mkdir --verbose -p $HOST_BMS_FOLDER;
+    echo "Running checks for access to \$BM_EXPOSE_FOLDER $BM_EXPOSE_FOLDER..." | lolcat
+    if [ ! -d "$BM_EXPOSE_FOLDER" ]; then
+      echo "Creating benchmark expose folder at $BM_EXPOSE_FOLDER"
+      sudo mkdir --verbose -p $BM_EXPOSE_FOLDER;
     fi
-    chmod 777 $HOST_BMS_FOLDER --verbose
-    if [ $? -ne 0 ]; then
-      echo "Failed to set permissions for $HOST_BMS_FOLDER, please check the folder permissions and make sure $USER has write access to it"
+    # Check for group access to BM_EXPOSE_FOLDER
+    if ! getent group "$BM_EXTRACTER_GROUP" > /dev/null; then
+      echo "Creating group $BM_EXTRACTER_GROUP"
+      sudo groupadd "$BM_EXTRACTER_GROUP"
+    fi
+    if [ -z "$(stat -c %G "$BM_EXPOSE_FOLDER" | grep "$BM_EXTRACTER_GROUP")" ]; then
+      echo "Changing group ownership of $BM_EXPOSE_FOLDER to $USER:$BM_EXTRACTER_GROUP"
+      sudo chown --verbose $USER:"$BM_EXTRACTER_GROUP" "$BM_EXPOSE_FOLDER"
+    fi
+    if [ ! -w "$BM_EXPOSE_FOLDER" ]; then
+      echo "Adding $USER to $BM_EXTRACTER_GROUP group"
+      sudo usermod -a -G "$BM_EXTRACTER_GROUP" "$USER"
     fi
   '';
 }
