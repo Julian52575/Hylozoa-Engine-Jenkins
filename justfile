@@ -80,10 +80,9 @@ benchmark-exposer-up:
     ; fi;
     if [ -f {{BENCHMARK_EXPOSER_PROCESS_FILE}} ]; then just benchmark-exposer-down; fi
     inotifywait ".${HOST_BMS_FOLDER}" -e CREATE -e MOVED_TO --format '%f' -m | while read line; do \
-        TARGET_FOLDER="${BM_EXPOSE_FOLDER}/$line"; \
         echo "[$line] Update detected on .${HOST_BMS_FOLDER}/$line" >> {{BENCHMARK_EXPOSER_LOGS}}; \
-        mv ".${HOST_BMS_FOLDER}/$line" "${TARGET_FOLDER}"; \
-        echo "[$line] Moved benchmark results to ${TARGET_FOLDER}" >> {{BENCHMARK_EXPOSER_LOGS}}; \
+        cp ".${HOST_BMS_FOLDER}/$line" "${BM_EXPOSE_FOLDER}" && \
+            echo "[$line] Moved benchmark results to ${BM_EXPOSE_FOLDER}" >> {{BENCHMARK_EXPOSER_LOGS}}; \
     done & \
     PID=$!; \
     echo "Monitoring .${HOST_BMS_FOLDER} using PID $PID" > {{BENCHMARK_EXPOSER_LOGS}}; \
